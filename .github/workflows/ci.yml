@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: macos-latest
+
+    env:
+      SCHEME: album-discovery-app
+      PROJECT: album-discovery-app.xcodeproj
+      DESTINATION: 'platform=iOS Simulator,name=iPhone 17,OS=latest'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show toolchain versions
+        run: |
+          xcodebuild -version
+          swift --version
+          xcrun simctl list runtimes
+
+      - name: Build for testing
+        run: |
+          set -o pipefail
+          xcodebuild build-for-testing \
+            -project "$PROJECT" \
+            -scheme "$SCHEME" \
+            -destination "$DESTINATION" \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY=""
+
+      - name: Run tests
+        run: |
+          set -o pipefail
+          xcodebuild test-without-building \
+            -project "$PROJECT" \
+            -scheme "$SCHEME" \
+            -destination "$DESTINATION" \
+            -configuration Debug \
+            -resultBundlePath TestResults.xcresult \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY=""
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TestResults
+          path: TestResults.xcresult
+          if-no-files-found: ignore
