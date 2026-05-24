@@ -6,7 +6,7 @@ enum MockTrackServiceError: Error {
 }
 
 // アプリバンドルに同梱された mock_tracks.json を読み込んで [Track] を返す Service。
-struct MockTrackService {
+struct MockTrackService: TrackServiceProtocol {
 
     func fetchTracks() async throws -> [Track] {
         // ① バンドル内の mock_tracks.json の場所を取得
