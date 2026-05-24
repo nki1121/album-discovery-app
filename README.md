@@ -95,8 +95,7 @@ album-discovery-app/
     │   ├── TrackCardView.swift           # カード1枚分の見た目
     │   └── TrackRowView.swift            # (旧List表示用、将来の拡張用に保持)
     ├── Config/
-    │   ├── Secrets.swift                 # 環境変数読み込み (gitignored)
-    │   └── Secrets.swift.example         # セットアップ用テンプレート
+    │   └── Secrets.swift                 # 環境変数からの読み込み窓口 (値はコミットされない)
     ├── Resources/
     │   └── mock_tracks.json              # オフライン開発用データ
     └── Assets.xcassets/
