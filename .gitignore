@@ -99,3 +99,9 @@ iOSInjectionProject/
 **/xcshareddata/WorkspaceSettings.xcsettings
 
 # End of https://www.toptal.com/developers/gitignore/api/xcode,swift
+
+### App-specific ###
+# Secrets file (contains API keys / Client Secret).
+# 必ず Secrets.example.swift をテンプレートとして使い、
+# 実際の値が入った Secrets.swift はコミットしない。
+Secrets.swift
