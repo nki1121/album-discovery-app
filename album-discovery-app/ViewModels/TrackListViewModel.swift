@@ -17,7 +17,7 @@ final class TrackListViewModel: ObservableObject {
 
     private let service: TrackServiceProtocol
 
-    init(service: TrackServiceProtocol = MockTrackService()) {
+    init(service: TrackServiceProtocol = SpotifyTrackService()) {
         self.service = service
     }
 
