@@ -23,10 +23,18 @@ final class TrackListViewModel: ObservableObject {
 
     // View の .task から呼ばれる、データ読み込みのエントリーポイント。
     func load() async {
-        // TODO: isLoading を true にする
-        // TODO: errorMessage を nil にリセットする
-        // TODO: do { tracks = try await service.fetchTracks() }
-        //       catch { errorMessage = error.localizedDescription }
-        // TODO: defer もしくは catch/成功 両方で isLoading = false に戻す
+        // ① ローディング状態に入る + 前回のエラーをクリア
+        isLoading = true
+        errorMessage = nil
+
+        // ② この関数を抜けるときに、必ず isLoading を false に戻す
+        defer { isLoading = false }
+
+        // ③ Service を呼ぶ。成功すれば tracks に代入、失敗すれば errorMessage に代入。
+        do {
+            tracks = try await service.fetchTracks()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 }

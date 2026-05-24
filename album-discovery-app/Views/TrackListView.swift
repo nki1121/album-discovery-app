@@ -12,28 +12,48 @@ struct TrackListView: View {
     @StateObject private var viewModel = TrackListViewModel()
 
     var body: some View {
-        // TODO: NavigationStack { ... } で包み、 .navigationTitle("Albums") を付ける
-        //
-        // TODO: 表示の出し分けを実装する
-        //   - viewModel.isLoading が true → ProgressView()
-        //   - viewModel.errorMessage が非 nil → エラーメッセージを Text で表示
-        //   - それ以外 → List(viewModel.tracks) { track in 行ビュー }
-        //
-        // TODO: 行ビュー (とりあえずこの中にインラインで書いてもOK)
-        //   HStack {
-        //       AsyncImage(url: track.artworkURL) { image in image.resizable() }
-        //                  placeholder: { Color.gray }
-        //           .frame(width: 56, height: 56)
-        //           .clipShape(RoundedRectangle(cornerRadius: 6))
-        //       VStack(alignment: .leading) {
-        //           Text(track.title).font(.headline)
-        //           Text(track.artistName).font(.subheadline).foregroundStyle(.secondary)
-        //       }
-        //   }
-        //
-        // TODO: View に .task { await viewModel.load() } を付け、初回表示時にロードを走らせる
+        NavigationStack {
+            // ViewModel の状態に応じて、表示するViewを切り替える
+            Group {
+                if viewModel.isLoading {
+                    // ローディング中: くるくる回るインジケータ
+                    ProgressView("読み込み中…")
+                } else if let errorMessage = viewModel.errorMessage {
+                    // エラー時: メッセージを赤字で表示
+                    Text(errorMessage)
+                        .foregroundStyle(.red)
+                        .padding()
+                } else {
+                    // 通常時: 楽曲一覧
+                    List(viewModel.tracks) { track in
+                        HStack {
+                            // アルバムジャケット画像 (URLから非同期で取得)
+                            AsyncImage(url: track.artworkURL) { image in
+                                image.resizable()
+                            } placeholder: {
+                                Color.gray
+                            }
+                            .frame(width: 56, height: 56)
+                            .clipShape(RoundedRectangle(cornerRadius: 6))
 
-        Text("TODO: TrackListView を実装する")
+                            // 曲名 + アーティスト名
+                            VStack(alignment: .leading) {
+                                Text(track.title)
+                                    .font(.headline)
+                                Text(track.artistName)
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Albums")
+        }
+        // 画面表示時に1回だけロードを実行
+        .task {
+            await viewModel.load()
+        }
     }
 }
 
