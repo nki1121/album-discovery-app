@@ -26,25 +26,7 @@ struct TrackListView: View {
                 } else {
                     // 通常時: 楽曲一覧
                     List(viewModel.tracks) { track in
-                        HStack {
-                            // アルバムジャケット画像 (URLから非同期で取得)
-                            AsyncImage(url: track.artworkURL) { image in
-                                image.resizable()
-                            } placeholder: {
-                                Color.gray
-                            }
-                            .frame(width: 56, height: 56)
-                            .clipShape(RoundedRectangle(cornerRadius: 6))
-
-                            // 曲名 + アーティスト名
-                            VStack(alignment: .leading) {
-                                Text(track.title)
-                                    .font(.headline)
-                                Text(track.artistName)
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
+                        TrackRowView(track: track)
                     }
                 }
             }

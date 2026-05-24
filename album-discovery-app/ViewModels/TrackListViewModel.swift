@@ -15,9 +15,9 @@ final class TrackListViewModel: ObservableObject {
     @Published private(set) var isLoading: Bool = false
     @Published private(set) var errorMessage: String? = nil
 
-    private let service: MockTrackService
+    private let service: TrackServiceProtocol
 
-    init(service: MockTrackService = MockTrackService()) {
+    init(service: TrackServiceProtocol = MockTrackService()) {
         self.service = service
     }
 
