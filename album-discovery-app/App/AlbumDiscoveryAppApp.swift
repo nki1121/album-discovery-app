@@ -5,6 +5,7 @@ import SwiftUI
 // ここでは最初に表示する画面 (TrackListView) を WindowGroup に渡すだけにしておく。
 @main
 struct AlbumDiscoveryAppApp: App {
+    
     var body: some Scene {
         WindowGroup {
             TrackListView()
